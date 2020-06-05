@@ -10,11 +10,28 @@ include_directories(${PROJECT_SOURCE_DIR}/include/)
 include_directories(${PROJECT_SOURCE_DIR}/)
 
 set(SOURCE_FILES
+        include/lightquery/dataflow.hh
+        include/lightquery/typedef.hh
+        include/lightquery/actor_core.hh
+        include/lightquery/actor_reference.hh
+        include/lightquery/actor_implementation.hh
+        include/lightquery/tag_message.hh
+        include/lightquery/op_code_tree.hh
+        include/lightquery/operator_base.hh
+        include/lightquery/operators.hh
         include/lightquery/util/art.hh
         include/lightquery/util/radix_tree_index.hh
-        src/util/art.cc)
+        include/lightquery/util/common_utils.hh
+        include/lightquery/graph_handle.hh
+        src/dataflow.cc
+        src/actor_core.cc
+        src/actor_implementation.cc
+        src/operator_base.cc
+        src/operators.cc
+        src/util/art.cc
+        src/graph_handle.cc)
 
-add_library(lightgraph STATIC IMPORTED ${SOURCE_FILES})
+add_library(lightgraph STATIC IMPORTED)
 set_property(TARGET lightgraph PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/liblightgraph.a)
 
 set(TARGET_LINK_FLAGS -lrocksdb -ljsoncpp -ldl -pthread)
