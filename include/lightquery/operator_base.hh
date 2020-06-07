@@ -3,7 +3,6 @@
 //
 
 #include <lightquery/actor_implementation.hh>
-#include <lightquery/graph_handle.hh>
 
 namespace lightquery
 {

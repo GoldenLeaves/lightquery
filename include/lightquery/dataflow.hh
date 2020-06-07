@@ -22,6 +22,8 @@ public:
         , _op_codes(op_code_tree()) {}
     ~dataflow() override = default;
 
+    void enque_message(tag_message* msg) override;
+    void enque_urgent_message(tag_message* msg) override;
     void add_task(std::unique_ptr<actor_base>&& t) override;
     void add_urgent_task(std::unique_ptr<actor_base>&& t) override;
     void run_and_dispose() noexcept override;

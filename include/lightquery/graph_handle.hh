@@ -3,13 +3,11 @@
 //
 #pragma once
 
-#include <lightgraph/ldb.hh>
+#include <lightquery/typedef.hh>
 #include <iostream>
 
 namespace lightquery
 {
-
-lightgraph::LDB* graph_handle;
 
 lightgraph::Schema GetSchema();
 

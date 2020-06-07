@@ -6,6 +6,7 @@
 #include <lightquery/util/common_utils.hh>
 #include <cstdint>
 #include <lightgraph/typedef.hh>
+#include <lightgraph/ldb.hh>
 
 namespace lightquery
 {
@@ -46,5 +47,7 @@ using branch_id_t = uint32_t;
 using code_t = std::tuple<op_name, operator_id_t, std::string>;
 
 const uint32_t shard_number = 1;
+
+extern lightgraph::LDB* graph_handle;
 
 } // end namespace lightquery

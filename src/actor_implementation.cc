@@ -12,6 +12,7 @@ void stateless_actor::run_and_dispose() noexcept {
     _execution_count = 0;
     while (!_mailbox.empty() && not_expired()) {
         tag_message* msg = deque_message();
+        // std::cout << "receive msg in operator!" << std::endl;
         if (msg->type == message_type::USER) {
             auto result_f = do_work(msg->payload);
             if(result_f == result_flags::CancelMe) {

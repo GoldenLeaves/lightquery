@@ -28,11 +28,11 @@ public:
         return new code_t{op, ds_id, std::move(params)};
     }
 
-    code_t* get(const byte_t *addr, unsigned len) {
+    code_t* get(byte_t *addr, unsigned len) {
         auto* head = &_head;
         while (!head->next.empty()) {
-            head = &(head->next[*addr]);
             addr += sizeof(operator_id_t) + head->ignore_len;
+            head = &(head->next[*reinterpret_cast<operator_id_t*>(addr)]);
         }
         return head->data_ptr;
     }
@@ -49,12 +49,10 @@ private:
     }
 
     void dummy_insert_simple() {
-        auto code_get_v = gen_code(op_name::GET_VERTEX, 1, "519402");
-        _head.next.emplace_back(node{0, std::vector<node>{}, code_get_v});
-        auto code_out = gen_code(op_name::OUT, 2, "knows");
-        _head.next.emplace_back(node{0, std::vector<node>{}, code_out});
+        auto code_out = gen_code(op_name::OUT, 1, "knows");
+        _head.next.emplace_back(node{4, std::vector<node>{}, code_out});
         auto code_limit = gen_code(op_name::LIMIT, -1, "5");
-        _head.next.emplace_back(node{0, std::vector<node>{}, code_limit});
+        _head.next.emplace_back(node{4, std::vector<node>{}, code_limit});
     }
 
 };

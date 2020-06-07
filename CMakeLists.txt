@@ -38,6 +38,8 @@ set(TARGET_LINK_FLAGS -lrocksdb -ljsoncpp -ldl -pthread)
 
 add_executable(test_demo tests/demo.cc)
 add_executable(test_radix_tree tests/test_radix_tree.cc ${SOURCE_FILES})
+add_executable(test_operator tests/test_operator.cc ${SOURCE_FILES})
 
 target_link_libraries(test_demo lightgraph ${TARGET_LINK_FLAGS})
 target_link_libraries(test_radix_tree lightgraph ${TARGET_LINK_FLAGS})
+target_link_libraries(test_operator lightgraph ${TARGET_LINK_FLAGS})

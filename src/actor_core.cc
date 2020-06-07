@@ -3,6 +3,7 @@
 //
 
 #include <lightquery/actor_core.hh>
+#include <iostream>
 
 namespace lightquery
 {
@@ -16,6 +17,7 @@ actor_base::actor_base(execution_context_base *exec_ctx, actor_reference *datafl
 }
 
 void actor_base::enque_message(tag_message* message) {
+    // std::cout << "Enqueue message in actor!" << std::endl;
     _mailbox.push_back(message);
     activate();
 }

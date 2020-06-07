@@ -8,11 +8,28 @@
 namespace lightquery
 {
 
+uint32_t string_to_unsigned_int(std::string str)
+{
+	uint32_t result(0);
+	for (auto i = str.size() - 1; i >= 0; i--)
+	{
+        uint32_t temp(0), k = str.size() - i - 1;
+		if (isdigit(str[i]))
+		{
+			temp = str[i] - '0';
+			while (k--) { temp *= 10; }
+			result += temp;
+		}
+		else break;
+	}
+	return result;
+}
+
 void dataflow::add_task(std::unique_ptr<actor_base>&& t) {
     _task_queue.push_back(std::unique_ptr<actor_base>(t.release()));
     // For distribution and multithread
     // There is a higher level, at which case the dataflow itself is also an actor group
-    activate();
+    // activate();
 }
 
 /// Urgent tasks are assigned of a high prioroty (IMT_MAX by default) and pushed to the head of
@@ -23,7 +40,7 @@ void dataflow::add_urgent_task(std::unique_ptr<actor_base> &&t) {
     _task_queue.push_back(std::unique_ptr<actor_base>(t.release()));
     // For distribution and multithread
     // There is a higher level, at which case the dataflow itself is also an actor group
-    activate();
+    // activate();
 }
 
 void dataflow::schedule() {
@@ -51,13 +68,24 @@ void dataflow::process_mailbox() {
                         auto op_code = _op_codes.get(child_radix_addr, child_addr_len);
                         switch (std::get<0>(*op_code)) {
                             case op_name::OUT : {
+                                // std::cout << "Create Out Op!" << std::endl;
                                 // TODO: Parse the third parm of op_code ( "label, latest_arr_time")
                                 child = new out_op(this, this, child_radix_addr, child_addr_len,
                                         std::get<1>(*op_code), std::get<2>(*op_code));
-                                _actor_tree.insert(child_radix_addr, child, child_addr_len);
+                                break;
+                            }
+                            case op_name::LIMIT : {
+                                // std::cout << "Create limit Op!" << std::endl;
+                                child = new limit_op(this, this, child_radix_addr, child_addr_len,
+                                        std::get<1>(*op_code),
+                                        string_to_unsigned_int(std::get<2>(*op_code)));
+                                break;
                             }
                             default:
                                 break;
+                        }
+                        if (child) {
+                            _actor_tree.insert(child_radix_addr, child, child_addr_len);
                         }
                         break;
                     }
@@ -146,6 +174,14 @@ void dataflow::handle_stop_from_parent() {
 
 bool dataflow::idle() {
     return _task_queue.empty() && _mailbox.empty();
+}
+
+void dataflow::enque_message(tag_message *msg) {
+    _mailbox.push_back(msg);
+}
+
+void dataflow::enque_urgent_message(tag_message *msg) {
+    _mailbox.push_front(msg);
 }
 
 }
